@@ -9,17 +9,40 @@ class CommentApp extends Component{
             commentlist:[]
         }
     }
+    componentWillMount(){
+        console.log(localStorage.comments)
+        let commentlist = localStorage.comments
+        if (commentlist) {
+            commentlist = JSON.parse(commentlist)
+            this.setState({ commentlist })
+        }
+    }
     handleSubmitComment(arg){
-        this.state.commentlist.push(arg)
+        //this.state.commentlist.push(arg)
+        let a = this.state.commentlist
+        a.push(arg)
         this.setState({
-            commentlist: this.state.commentlist
+            commentlist: a
         })
+        localStorage.setItem('comments',JSON.stringify(a))
+    }
+    handleDeleteComment(index){
+        console.log(index)
+        let a = this.state.commentlist
+        a.splice(index,1)
+        this.setState({
+            commentlist:a
+        })
+        localStorage.setItem('comments',JSON.stringify(a))
     }
     render(){
         return (
             <div className="wrapper">
                 <CommentInput onSubmit={ this.handleSubmitComment.bind(this) }/>
-                <CommentList commentlist={ this.state.commentlist } />
+                <CommentList 
+                commentlist={ this.state.commentlist } 
+                onDeleteComment={this.handleDeleteComment.bind(this)} 
+                />
             </div>
         )
     }
